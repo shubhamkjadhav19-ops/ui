@@ -1,1 +1,1 @@
-export const API_BASE_URL = 'https://generous-warmth.up.railway.app:8080';
+export const API_BASE_URL = 'https://blog-production-3d74.up.railway.app/';
