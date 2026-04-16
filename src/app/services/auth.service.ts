@@ -8,16 +8,20 @@ import { AuthResponse, LoginRequest, RegisterRequest } from '../models';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly tokenKey = 'blog_jwt_token';
+  private get baseUrl(): string {
+    // Avoid accidental double slashes if API_BASE_URL ends with `/`.
+    return API_BASE_URL.replace(/\/+$/, '');
+  }
 
   constructor(private http: HttpClient, private router: Router) {}
 
   register(payload: RegisterRequest): Observable<string> {
-    return this.http.post(`${API_BASE_URL}/auth/register`, payload, { responseType: 'text' });
+    return this.http.post(`${this.baseUrl}/auth/register`, payload, { responseType: 'text' });
   }
 
   login(payload: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${API_BASE_URL}/auth/login`, payload).pipe(
-      tap((response) => localStorage.setItem(this.tokenKey, response.token))
+    return this.http.post<AuthResponse>(`${this.baseUrl}/auth/login`, payload).pipe(
+      tap((response: AuthResponse) => localStorage.setItem(this.tokenKey, response.token))
     );
   }
 
