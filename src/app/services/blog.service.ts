@@ -7,6 +7,10 @@ import { BlogRequest, BlogResponse, PagedResponse } from '../models';
 @Injectable({ providedIn: 'root' })
 export class BlogService {
   constructor(private http: HttpClient) {}
+  private get baseUrl(): string {
+    // Avoid accidental double slashes if API_BASE_URL ends with `/`.
+    return API_BASE_URL.replace(/\/+$/, '');
+  }
 
   createBlog(payload: BlogRequest): Observable<BlogResponse> {
     const formData = new FormData();
@@ -15,7 +19,7 @@ export class BlogService {
     if (payload.image) {
       formData.append('image', payload.image);
     }
-    return this.http.post<BlogResponse>(`${API_BASE_URL}/api/blogs`, formData);
+    return this.http.post<BlogResponse>(`${this.baseUrl}/api/blogs`, formData);
   }
 
   getBlogs(
@@ -27,11 +31,11 @@ export class BlogService {
     authorUsername = ''
   ): Observable<PagedResponse<BlogResponse>> {
     return this.http.get<PagedResponse<BlogResponse>>(
-      `${API_BASE_URL}/api/blogs?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}&title=${encodeURIComponent(title)}&authorUsername=${encodeURIComponent(authorUsername)}`
+      `${this.baseUrl}/api/blogs?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}&title=${encodeURIComponent(title)}&authorUsername=${encodeURIComponent(authorUsername)}`
     );
   }
 
   deleteBlog(id: number): Observable<string> {
-    return this.http.delete(`${API_BASE_URL}/api/blogs/${id}`, { responseType: 'text' });
+    return this.http.delete(`${this.baseUrl}/api/blogs/${id}`, { responseType: 'text' });
   }
 }
