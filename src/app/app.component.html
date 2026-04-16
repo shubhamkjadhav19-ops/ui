@@ -1,0 +1,29 @@
+<div class="topbar-shell">
+  <div class="container topbar border-bottom">
+    <div class="brand">
+      <h1 class="page-title">Blog Admin</h1>
+    </div>
+    <div class="topbar-nav">
+      <a *ngIf="!authService.isLoggedIn()" routerLink="/login">Sign in</a>
+      <a *ngIf="!authService.isLoggedIn()" routerLink="/register" class="nav-cta">Register</a>
+      <a *ngIf="authService.isLoggedIn()" routerLink="/blogs">Blogs</a>
+      <button *ngIf="authService.isLoggedIn()" (click)="logout()" class="secondary">Logout</button>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="alert-modal-overlay" *ngIf="(toastService.currentToast$ | async) as toast">
+    <div class="alert-modal">
+      <h3>{{ toast.type === 'success' ? 'Success' : 'Error' }}</h3>
+      <div class="alert-modal-icon" [class.alert-modal-icon-error]="toast.type === 'error'">
+        {{ toast.type === 'success' ? '✓' : '!' }}
+      </div>
+      <p>{{ toast.text }}</p>
+      <button class="alert-modal-btn" (click)="dismissAlert()">Ok</button>
+    </div>
+  </div>
+
+  <router-outlet></router-outlet>
+</div>
